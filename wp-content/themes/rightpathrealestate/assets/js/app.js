@@ -1,60 +1,47 @@
-$(function () {
+jQuery(document).ready(function($) {
 
-    "use strict";
+    if (typeof themeVars === 'undefined') {
+        console.error('themeVars is not defined! Check functions.php and wp_footer().');
+        return;
+    }
 
-    // On window's load
-    $(window).on('load', function () {
-        populateColorPlates();
-        setTimeout(function () {
-            $(".page_loader").fadeOut("fast");
-            $('link[id="style_sheet"]').attr('href', 'assets/css/skins/default.css');
-        }, 1000);
-        if ($('body .filter-portfolio').length > 0) {
-            $(function () {
-                $('.filter-portfolio').filterizr(
-                    {
-                        delay: 0
-                    }
-                );
-            });
-            $('.filteriz-navigation li').on('click', function () {
-                $('.filteriz-navigation .filtr').removeClass('active');
-                $(this).addClass('active');
-            });
-        }
-    });
+    // Load default CSS skin dynamically
+    setTimeout(function() {
+        $('link[id="style_sheet"]').attr('href', themeVars.themeUrl + '/assets/css/skins/default.css');
+    }, 1000);
 
+    // Portfolio filter
+    if ($('body .filter-portfolio').length > 0) {
+        $('.filter-portfolio').filterizr({ delay: 0 });
+        $('.filteriz-navigation li').on('click', function () {
+            $('.filteriz-navigation .filtr').removeClass('active');
+            $(this).addClass('active');
+        });
+    }
 
-    // Header shrink while page scroll
+    // Header shrink
     adjustHeader();
     doSticky();
+
     $(window).on('scroll', function () {
         adjustHeader();
         doSticky();
     });
 
-    function adjustHeader()
-    {
-        var windowWidth = $(window).width();
-        if(windowWidth > 0) {
+    function adjustHeader() {
+        var $logo = $('.logo img');
+        var $header = $('.sticky-header');
+
+        if ($(window).width() > 0) {
             if ($(document).scrollTop() >= 100) {
-                if($('.header-shrink').length < 1) {
-                    $('.sticky-header').addClass('header-shrink');
-                }
-                if($('.do-sticky').length < 1) {
-                    $('.logo img').attr('src', 'assets/img/logos/black-logo.png');
-                }
-            }
-            else {
-                $('.sticky-header').removeClass('header-shrink');
-                if($('.do-sticky').length < 1 && $('.fixed-header').length == 0 && $('.fixed-header2').length == 0) {
-                    $('.logo img').attr('src', 'assets/img/logos/logo.png');
-                } else {
-                    $('.logo img').attr('src', 'assets/img/logos/logo.png');
-                }
+                $header.addClass('header-shrink');
+                $logo.attr('src', themeVars.themeUrl + '/assets/img/logos/black-logo.png');
+            } else {
+                $header.removeClass('header-shrink');
+                $logo.attr('src', themeVars.themeUrl + '/assets/img/logos/logo.png');
             }
         } else {
-            $('.logo img').attr('src', 'assets/img/logos/black-logo.png');
+            $logo.attr('src', themeVars.themeUrl + '/assets/img/logos/black-logo.png');
         }
     }
 
