@@ -1,4 +1,5 @@
 <?php
+// Enqueue styles and scripts
 function rightpath_enqueue_assets() {
     // Styles
     wp_enqueue_style('bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.min.css', array(), '4.6.0');
@@ -16,6 +17,7 @@ function rightpath_enqueue_assets() {
     
     // Main stylesheet
     wp_enqueue_style('rightpath-style', get_template_directory_uri() . '/assets/css/style.css', array(), filemtime(get_template_directory() . '/assets/css/style.css'));
+    wp_enqueue_style('rightpath-stylecss', get_template_directory_uri() . '/style.css', array(), filemtime(get_template_directory() . '/style.css'));
     
     // Skin CSS
     wp_enqueue_style('skin-default', get_template_directory_uri() . '/assets/css/skins/default.css', array('rightpath-style'), filemtime(get_template_directory() . '/assets/css/skins/default.css'));
@@ -59,4 +61,64 @@ function rightpath_enqueue_assets() {
     wp_localize_script('app', 'themeVars', $theme_vars);
 }
 add_action('wp_enqueue_scripts', 'rightpath_enqueue_assets');
+
+
+// Register menu
+function rightpath_register_menus() {
+    register_nav_menus(array(
+        'primary_menu' => __('Primary Menu', 'rightpathrealestate'),
+    ));
+}
+add_action('after_setup_theme', 'rightpath_register_menus');
+
+
+// Add li classes
+function rightpath_add_menu_classes($classes, $item, $args, $depth = 0) {
+    if ($args->theme_location === 'primary') { // match your menu location
+        $classes[] = 'nav-item';
+
+        // Add active class to current item, parent or ancestor
+        if (in_array('current-menu-item', $item->classes) || 
+            in_array('current-menu-parent', $item->classes) || 
+            in_array('current-menu-ancestor', $item->classes)) {
+            $classes[] = 'active';
+        }
+
+        // Contact Us button
+        if ($item->title === 'Contact Us') {
+            $classes[] = 'sb2';
+        }
+
+        // Dropdown parent
+        if (in_array('menu-item-has-children', $item->classes)) {
+            $classes[] = 'dropdown';
+        }
+    }
+    return $classes;
+}
+add_filter('nav_menu_css_class', 'rightpath_add_menu_classes', 10, 4);
+
+// Add link classes
+function rightpath_add_link_attributes($atts, $item, $args, $depth = 0) {
+    if ($args->theme_location === 'primary') {
+        $atts['class'] = ($item->title === 'Contact Us') ? 'submit-btn' : 'nav-link';
+
+        // Dropdown toggle
+        if (in_array('menu-item-has-children', $item->classes)) {
+            $atts['class'] .= ' dropdown-toggle';
+            $atts['data-toggle'] = 'dropdown';
+            $atts['aria-haspopup'] = 'true';
+            $atts['aria-expanded'] = 'false';
+            $atts['id'] = 'navbarDropdownMenuLink-' . $item->ID;
+        }
+    }
+    return $atts;
+}
+add_filter('nav_menu_link_attributes', 'rightpath_add_link_attributes', 10, 4);
+
+
+
+// Include Bootstrap Navwalker
+require_once get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
+
 ?>

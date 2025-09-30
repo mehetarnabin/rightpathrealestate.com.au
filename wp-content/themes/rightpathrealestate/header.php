@@ -15,8 +15,6 @@
 </head>
 <body <?php body_class(); ?> id="top" class="index-body">
 
-<!--<div class="page_loader"></div>-->
-
 <!-- Top header start -->
 <header class="top-header th-bg" id="top-header-2">
     <div class="container">
@@ -49,31 +47,23 @@
                     <a class="navbar-brand logo" href="<?php echo home_url(); ?>">
                         <img src="<?php echo get_template_directory_uri(); ?>/assets/img/logos/black-logo.png" alt="logo">
                     </a>
-                    <button class="navbar-toggler" type="button" id="drawer">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
                         <span class="fa fa-bars"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbar">
-                        <ul class="navbar-nav justify-content-end ml-auto">
-                            <li class="nav-item active"><a class="nav-link" href="<?php echo home_url(); ?>">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="<?php echo home_url('/about'); ?>">About Us</a></li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown">Properties</a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                                    <li><a class="dropdown-item" href="<?php echo home_url('/properties-for-sale'); ?>">For Sale</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo home_url('/properties-for-lease'); ?>">For Lease</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo home_url('/sold-properties'); ?>">Recently Sold</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo home_url('/property-invest'); ?>">Invest</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="<?php echo home_url('/team'); ?>">Team</a></li>
-                            <li class="nav-item"><a class="nav-link" href="<?php echo home_url('/blog'); ?>">Blog</a></li>
-                            <li class="nav-item"><a class="nav-link" href="<?php echo home_url('/careers'); ?>">Careers</a></li>
-                            <li class="nav-item"><a class="nav-link" href="<?php echo home_url('/faq'); ?>">FAQ</a></li>
-                            <li class="nav-item sb2">
-                                <a href="<?php echo home_url('/contact'); ?>" class="submit-btn">Contact Us</a>
-                            </li>
-                        </ul>
-                    </div>
+    <?php
+    wp_nav_menu(array(
+        'theme_location' => 'primary_menu',
+        'container'      => false,
+        'menu_class'     => 'navbar-nav justify-content-end ml-auto',
+        'fallback_cb'    => false,
+        'depth'          => 2, // Only 2 levels for dropdown
+        'walker' => new WP_Bootstrap_Navwalker(),
+
+    ));
+    ?>
+</div>
+
                 </nav>
             </div>
         </div>
@@ -91,11 +81,14 @@
         <div class="sidebar-navigation">
             <h3 class="heading">Menu</h3>
             <?php
-            wp_nav_menu(array(
-                'theme_location' => 'primary_menu',
-                'menu_class' => 'menu-list',
-                'container' => false
-            ));
+                wp_nav_menu(array(
+                    'theme_location' => 'primary_menu',
+                    'container'      => false,
+                    'menu_class'     => 'navbar-nav ml-auto',
+                    'fallback_cb'    => false,
+                    'depth'          => 2, // 2 levels is enough for dropdown
+                    'walker'         => new WP_Bootstrap_Navwalker(),
+                ));
             ?>
         </div>
         <div class="get-in-touch">

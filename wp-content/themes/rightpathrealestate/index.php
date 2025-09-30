@@ -42,7 +42,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 2">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Sale</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-4.png" alt="property-box-7" class="img-fluid">
@@ -50,10 +50,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Real Luxury Villa</a>
+                                <a href="properties-details.php">Real Luxury Villa</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -86,7 +86,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="2, 1">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Rent</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-5.png" alt="property-box-7" class="img-fluid">
@@ -94,10 +94,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Beautiful Single Home</a>
+                                <a href="properties-details.php">Beautiful Single Home</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -130,7 +130,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 1, 2">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Sale</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-6.png" alt="property-box-7" class="img-fluid">
@@ -138,10 +138,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Sweet Family Home</a>
+                                <a href="properties-details.php">Sweet Family Home</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -174,7 +174,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Rent</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-1.png" alt="property-box-7" class="img-fluid">
@@ -182,10 +182,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Modern Family Home</a>
+                                <a href="properties-details.php">Modern Family Home</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -218,7 +218,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 2, 1">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Sale</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-2.png" alt="property-box-7" class="img-fluid">
@@ -226,10 +226,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Relaxing Apartment</a>
+                                <a href="properties-details.php">Relaxing Apartment</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -262,7 +262,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="1, 2">
                     <div class="property-box-7">
                         <div class="property-thumbnail">
-                            <a href="properties-details.html" class="property-img">
+                            <a href="properties-details.php" class="property-img">
                                 <div class="tag-2">For Rent</div>
                                 <div class="price-box"><span>$850.00</span> Per night</div>
                                 <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-3.png" alt="property-box-7" class="img-fluid">
@@ -270,10 +270,10 @@
                         </div>
                         <div class="detail">
                             <h1 class="title">
-                                <a href="properties-details.html">Masons Villas</a>
+                                <a href="properties-details.php">Masons Villas</a>
                             </h1>
                             <div class="location">
-                                <a href="properties-details.html">
+                                <a href="properties-details.php">
                                     <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
                                 </a>
                             </div>
@@ -400,7 +400,7 @@
                     </a>
                     <div class="content light-bg transition">
                         <h4 class="title">
-                            <a href="properties-details.html">Sweet Family Home</a>
+                            <a href="properties-details.php">Sweet Family Home</a>
                         </h4>
                         <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
                         <div class="transition clearfix">
@@ -427,7 +427,7 @@
                     </a>
                     <div class="content light-bg transition">
                         <h4 class="title">
-                            <a href="properties-details.html">Masons Villas</a>
+                            <a href="properties-details.php">Masons Villas</a>
                         </h4>
                         <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
                         <div class="transition clearfix">
@@ -454,7 +454,7 @@
                     </a>
                     <div class="content light-bg transition">
                         <h4 class="title">
-                            <a href="properties-details.html">Beautiful Single Home</a>
+                            <a href="properties-details.php">Beautiful Single Home</a>
                         </h4>
                         <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
                         <div class="transition clearfix">
@@ -605,12 +605,12 @@
                         <div class="blog-photo">
                             <img src="<?php bloginfo('template_directory') ?>/assets/img/blog/blog-3.png" alt="blog-2" class="img-fluid">
                             <div class="overlay-icon">
-                                <a href="blog-detail.html"><span><i class="flaticon-add"></i></span></a>
+                                <a href="blog-detail.php"><span><i class="flaticon-add"></i></span></a>
                             </div>
                         </div>
                         <div class="blog-one__single-text-box detail">
                             <h3 class="title">
-                                <a href="blog-detail.html">Buying a Best House</a>
+                                <a href="blog-detail.php">Buying a Best House</a>
                             </h3>
                             <p class="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</p>
                             <ul class="post-meta">
@@ -625,12 +625,12 @@
                         <div class="blog-photo">
                             <img src="<?php bloginfo('template_directory') ?>/assets/img/blog/blog.png" alt="blog-2" class="img-fluid">
                             <div class="overlay-icon">
-                                <a href="blog-detail.html"><span><i class="flaticon-add"></i></span></a>
+                                <a href="blog-detail.php"><span><i class="flaticon-add"></i></span></a>
                             </div>
                         </div>
                         <div class="blog-one__single-text-box detail">
                             <h3 class="title">
-                                <a href="blog-detail.html">Buying a Best House</a>
+                                <a href="blog-detail.php">Buying a Best House</a>
                             </h3>
                             <p class="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</p>
                             <ul class="post-meta">
@@ -645,12 +645,12 @@
                         <div class="blog-photo">
                             <img src="<?php bloginfo('template_directory') ?>/assets/img/blog/blog-2.png" alt="blog-2" class="img-fluid">
                             <div class="overlay-icon">
-                                <a href="blog-detail.html"><span><i class="flaticon-add"></i></span></a>
+                                <a href="blog-detail.php"><span><i class="flaticon-add"></i></span></a>
                             </div>
                         </div>
                         <div class="blog-one__single-text-box detail">
                             <h3 class="title">
-                                <a href="blog-detail.html">Find Your Dream Real Estate</a>
+                                <a href="blog-detail.php">Find Your Dream Real Estate</a>
                             </h3>
                             <p class="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</p>
                             <ul class="post-meta">
@@ -665,12 +665,12 @@
                         <div class="blog-photo">
                             <img src="<?php bloginfo('template_directory') ?>/assets/img/blog/blog-2.png" alt="blog-2" class="img-fluid">
                             <div class="overlay-icon">
-                                <a href="blog-detail.html"><span><i class="flaticon-add"></i></span></a>
+                                <a href="blog-detail.php"><span><i class="flaticon-add"></i></span></a>
                             </div>
                         </div>
                         <div class="blog-one__single-text-box detail">
                             <h3 class="title">
-                                <a href="blog-detail.html">Find Your Dream Real Estate</a>
+                                <a href="blog-detail.php">Find Your Dream Real Estate</a>
                             </h3>
                             <p class="text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</p>
                             <ul class="post-meta">

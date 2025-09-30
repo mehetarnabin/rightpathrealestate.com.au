@@ -9,3 +9,47 @@ License: GPLv2 or later
 Text Domain: rightpathrealestate
 Tags: real estate, responsive, business, property, bootstrap
 */
+/* Active top-level menu link (before and after scroll) */
+.main-header .navbar-nav .nav-item.active > .nav-link,
+.main-header.sticky-header .navbar-nav .nav-item.active > .nav-link {
+    color: #febe03 !important; /* same active color always */
+    font-weight: 600;
+}
+
+/* Active sub-menu item */
+.main-header .dropdown-menu .current-menu-item > a,
+.main-header.sticky-header .dropdown-menu .current-menu-item > a {
+    color: #febe03 !important;
+    font-weight: 600;
+}
+
+/* Dropdown menu styling */
+.main-header .dropdown-menu {
+    background-color: #00264e !important; /* dark dropdown background */
+    border: none !important;
+    margin-top: 0 !important;
+    padding: 0 !important;  
+    min-width: 200px;
+    box-shadow: none !important;
+    display: none; /* hide by default */
+}
+
+/* Show dropdown on hover */
+.main-header .navbar-nav .dropdown:hover > .dropdown-menu {
+    display: block;
+}
+
+/* Dropdown links */
+.main-header .dropdown-menu a {
+    color: #fff !important;
+    padding: 12px 20px !important;
+    font-size: 15px !important;
+    background: transparent !important;
+}
+
+/* Hover effect for dropdown links */
+.main-header .dropdown-menu a:hover {
+    background: #febe03 !important; /* orange hover */
+    color: #fff !important;
+    transform: none !important;
+}
