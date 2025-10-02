@@ -246,43 +246,48 @@ function rightpath_register_services_cpt() {
 }
 add_action('init', 'rightpath_register_services_cpt');
 
+// Force 404 for invalid URLs, including non-existent pages or posts
+function rightpath_force_404_for_nonexistent_pages() {
+    if ( is_admin() ) return;
 
+    global $wp_query;
 
-// Force 404 for invalid URLs, including restricted CPTs or private pages
-function rightpath_smart_404_redirect() {
-    if ( is_404() ) return; // Already 404
+    $requested_url = trim( $_SERVER['REQUEST_URI'], '/' ); // e.g., "about-us"
+    
+    // Get all page slugs
+    $pages = get_posts([
+        'post_type' => 'page',
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'fields' => 'post_name',
+    ]);
 
-    global $wp_query, $post;
+    // Get all CPT slugs if you want them included
+    $cpts = get_posts([
+        'post_type' => ['property','agent','service'],
+        'posts_per_page' => -1,
+        'post_status' => 'publish',
+        'fields' => 'post_name',
+    ]);
 
-    // Check if no posts matched
-    if ( !have_posts() ) {
+    $all_slugs = array_merge( $pages, $cpts );
+
+    // If requested URL does not match any slug, force 404
+    $matches = array_filter( $all_slugs, function($slug) use ($requested_url) {
+        return $slug === $requested_url;
+    });
+
+    if ( empty($matches) && !is_home() && !is_front_page() ) {
         $wp_query->set_404();
         status_header(404);
         nocache_headers();
-        include( get_template_directory() . '/404.php' );
-        exit;
-    }
-
-    // Optional: Check for restricted post types (private or unpublished)
-    if ( isset($post) ) {
-        $restricted_post_types = ['service', 'agent', 'property']; // Add your CPTs here
-        if ( in_array($post->post_type, $restricted_post_types) && $post->post_status != 'publish' ) {
-            $wp_query->set_404();
-            status_header(404);
-            nocache_headers();
-            include( get_template_directory() . '/404.php' );
-            exit;
-        }
-    }
-
-    // Optional: check for restricted pages (if you want)
-    if ( is_page() && !is_page($post->ID) ) {
-        $wp_query->set_404();
-        status_header(404);
-        nocache_headers();
-        include( get_template_directory() . '/404.php' );
+        include( get_query_template('404') );
         exit;
     }
 }
-add_action('template_redirect', 'rightpath_smart_404_redirect');
+add_action( 'template_redirect', 'rightpath_force_404_for_nonexistent_pages', 1 );
+
+
+
+
 
