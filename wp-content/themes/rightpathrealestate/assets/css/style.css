@@ -7080,7 +7080,8 @@ a {
     justify-content: center;
     align-items: center;
     padding: 25px 15px;
-    background: #1B1B1B;
+    /* background: #1B1B1B; */
+    background: rgb(0 39 78 / 80%);
 }
 
 .pages-404-2 .btn-2{

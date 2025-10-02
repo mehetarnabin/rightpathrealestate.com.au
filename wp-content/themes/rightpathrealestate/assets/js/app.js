@@ -880,3 +880,22 @@ $(document).ready(function() {
         $this.toggleClass('open');
     });
 });
+
+jQuery(document).ready(function($) {
+    var $container = $('.filter-portfolio .cars');
+
+    if ($container.length && $.fn.filterizr) {
+        $container.filterizr({
+            animationDuration: 0.5,
+            delay: 0,
+            layout: 'sameSize',
+        });
+
+        // Filter button active state
+        $('.filteriz-navigation li').on('click', function() {
+            $('.filteriz-navigation li').removeClass('active');
+            $(this).addClass('active');
+        });
+    }
+});
+

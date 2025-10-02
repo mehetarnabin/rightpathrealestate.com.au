@@ -569,7 +569,8 @@ blockquote footer{
 }
 
 .btn-2:hover {
-    color: #5950f7;
+    /* color: #5950f7; */
+    color: #febd03;
     border: solid 2px #00264d;
 }
 

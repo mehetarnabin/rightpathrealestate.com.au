@@ -53,3 +53,23 @@ Tags: real estate, responsive, business, property, bootstrap
     color: #fff !important;
     transform: none !important;
 }
+
+.services-info-2 .inner-buttom.si1 i {
+    display: none;
+}
+
+/* Icon styling */
+.services-info-2 .inner-top i {
+    display: block !important;       /* place icon on new line */
+    margin-top: 5px;                /* spacing from heading */
+    font-size: 40px;                 /* adjust icon size */
+    color: #000;                     /* icon color */
+    position: relative !important;   /* override theme absolute */
+    align-items: center;             /* horizontal centering */
+    text-align: center;              /* fallback for heading */
+}
+
+/* Back side: hide icon */
+.services-info-2 .inner-buttom i {
+    display: none !important;
+}

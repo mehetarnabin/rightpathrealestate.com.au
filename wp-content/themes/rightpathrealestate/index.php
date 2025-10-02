@@ -25,289 +25,162 @@
 </div>
 <!-- banner end -->
 
-<!-- Featured properties start -->
+<!-- Featured properties end -->
+<?php
+// Get all property types for Filterizr buttons
+$property_types = get_terms([
+    'taxonomy' => 'property_type',
+    'hide_empty' => false,
+]);
+?>
+
+<!-- Featured Properties Start -->
 <div class="featured-properties content-area-2">
     <div class="container">
+        <!-- Section Title & Filters -->
         <div class="main-title">
             <h1>Featured Properties</h1>
             <ul class="list-inline-listing filters filteriz-navigation">
                 <li class="active btn filtr-button filtr" data-filter="all">All</li>
-                <li data-filter="1" class="btn btn-inline filtr-button filtr">Apartment</li>
-                <li data-filter="2" class="btn btn-inline filtr-button filtr">House</li>
-                <li data-filter="3" class="btn btn-inline filtr-button filtr">Office</li>
+                <?php foreach ($property_types as $ptype) : ?>
+                    <li class="btn btn-inline filtr-button filtr" data-filter="<?php echo esc_attr($ptype->term_id); ?>">
+                        <?php echo esc_html($ptype->name); ?>
+                    </li>
+                <?php endforeach; ?>
             </ul>
         </div>
+
+        <!-- Properties Grid -->
         <div class="row filter-portfolio wow fadeInUp delay-04s">
-            <div class="cars">
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 2">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Sale</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-4.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Real Luxury Villa</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
+            <div class="cars"><!-- ✅ wrapper restored -->
+                <?php
+                $args = [
+                    'post_type' => 'property',
+                    'posts_per_page' => -1,
+                    'meta_query' => [
+                        ['key' => 'featured_property', 'value' => 1]
+                    ],
+                ];
+                $properties = new WP_Query($args);
+                if ($properties->have_posts()) :
+                    while ($properties->have_posts()) : $properties->the_post();
+
+                        // Get property type IDs for Filterizr
+                        $terms = wp_get_post_terms(get_the_ID(), 'property_type', ['fields' => 'ids']);
+                        $data_category = implode(',', $terms);
+
+                        // ACF fields
+                        $price = get_field('price');
+                        $status = get_field('status');
+                        $area = get_field('area');
+                        $beds = get_field('beds');
+                        $baths = get_field('baths');
+                        $garage = get_field('garage');
+                        $address = get_field('address');
+                        $agent = get_field('agent');
+                        $image = get_field('image');
+                ?>
+                    <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="<?php echo esc_attr($data_category); ?>">
+                        <div class="property-box-7">
+                            <!-- Thumbnail -->
+                            <div class="property-thumbnail">
+                                <a href="<?php the_permalink(); ?>" class="property-img">
+                                    <?php if ($status) : ?>
+                                        <div class="tag-2"><?php echo esc_html($status); ?></div>
+                                    <?php endif; ?>
+                                    <?php if ($price) : ?>
+                                        <div class="price-box"><span> $<?php echo esc_html($price); ?></span></div>
+                                    <?php endif; ?>
+                                    <?php if ($image) : ?>
+                                        <img src="<?php echo esc_url($image['url']); ?>" alt="<?php the_title(); ?>" class="img-fluid">
+                                    <?php else : ?>
+                                        <?php the_post_thumbnail('full', ['class' => 'img-fluid']); ?>
+                                    <?php endif; ?>
                                 </a>
                             </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
+
+                            <!-- Details -->
+                            <div class="detail">
+                                <h1 class="title">
+                                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                                </h1>
+                                <?php if ($address) : ?>
+                                    <div class="location">
+                                        <a href="<?php the_permalink(); ?>">
+                                            <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>
+                                            <?php echo esc_html($address); ?>
+                                        </a>
+                                    </div>
+                                <?php endif; ?>
                             </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
+                            <ul class="facilities-list clearfix">
+                                <?php if ($area) : ?><li><span>Area</span><?php echo esc_html($area); ?> Sqft</li><?php endif; ?>
+                                <?php if ($beds) : ?><li><span>Beds</span><?php echo esc_html($beds); ?></li><?php endif; ?>
+                                <?php if ($baths) : ?><li><span>Baths</span><?php echo esc_html($baths); ?></li><?php endif; ?>
+                                <?php if ($garage) : ?><li><span>Garage</span><?php echo esc_html($garage); ?></li><?php endif; ?>
                             </ul>
+                            <div class="footer clearfix">
+                                <div class="pull-left days">
+                                    <p>
+                                        <i class="fa fa-user"></i>
+                                        <?php 
+                                        $agent = get_field('agent'); 
+                                        if ($agent) {
+                                            // Case 1: Post Object
+                                            if ($agent instanceof WP_Post) {
+                                                $agent_id = $agent->ID;
+                                                echo '<a href="' . esc_url(get_permalink($agent_id)) . '">';
+                                                    echo esc_html(get_the_title($agent_id));
+                                                echo '</a>';
+
+                                                // Thumbnail clickable
+                                                if (has_post_thumbnail($agent_id)) {
+                                                    echo '<br><a href="' . esc_url(get_permalink($agent_id)) . '">';
+                                                        echo get_the_post_thumbnail($agent_id, 'thumbnail', ['class' => 'rounded-circle']);
+                                                    echo '</a>';
+                                                }
+                                            } 
+                                            // Case 2: ID
+                                            elseif (is_numeric($agent)) {
+                                                echo '<a href="' . esc_url(get_permalink($agent)) . '">';
+                                                    echo esc_html(get_the_title($agent));
+                                                echo '</a>';
+
+                                                if (has_post_thumbnail($agent)) {
+                                                    echo '<br><a href="' . esc_url(get_permalink($agent)) . '">';
+                                                        echo get_the_post_thumbnail($agent, 'thumbnail', ['class' => 'rounded-circle']);
+                                                    echo '</a>';
+                                                }
+                                            } 
+                                            // Case 3: Text fallback
+                                            else {
+                                                echo esc_html($agent);
+                                            }
+                                        } else {
+                                            echo 'Agent Name';
+                                        }
+                                        ?>
+                                    </p>
+                                </div>
+                                <ul class="pull-right">
+                                    <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
+                                    <li><a href="#"><i class="flaticon-calendar"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="2, 1">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Rent</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-5.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Beautiful Single Home</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
-                            </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 1, 2">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Sale</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-6.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Sweet Family Home</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
-                            </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Rent</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-1.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Modern Family Home</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
-                            </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="3, 2, 1">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Sale</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-2.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Relaxing Apartment</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
-                            </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-12 filtr-item" data-category="1, 2">
-                    <div class="property-box-7">
-                        <div class="property-thumbnail">
-                            <a href="properties-details.php" class="property-img">
-                                <div class="tag-2">For Rent</div>
-                                <div class="price-box"><span>$850.00</span> Per night</div>
-                                <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-3.png" alt="property-box-7" class="img-fluid">
-                            </a>
-                        </div>
-                        <div class="detail">
-                            <h1 class="title">
-                                <a href="properties-details.php">Masons Villas</a>
-                            </h1>
-                            <div class="location">
-                                <a href="properties-details.php">
-                                    <i class="flaticon-facebook-placeholder-for-locate-places-on-maps"></i>123 Kathal St. Tampa City,
-                                </a>
-                            </div>
-                        </div>
-                        <ul class="facilities-list clearfix">
-                            <li>
-                                <span>Area</span>3600 Sqft
-                            </li>
-                            <li>
-                                <span>Beds</span> 3
-                            </li>
-                            <li>
-                                <span>Baths</span> 2
-                            </li>
-                            <li>
-                                <span>Garage</span> 1
-                            </li>
-                        </ul>
-                        <div class="footer clearfix">
-                            <div class="pull-left days">
-                                <p><i class="fa fa-user"></i> Jhon Doe</p>
-                            </div>
-                            <ul class="pull-right">
-                                <li><a href="#"><i class="flaticon-heart-shape-outline"></i></a></li>
-                                <li><a href="#"><i class="flaticon-calendar"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                <?php
+                    endwhile;
+                    wp_reset_postdata();
+                else :
+                    echo '<p class="text-center w-100 py-5 fw-bold text-muted">No featured properties found.</p>';
+                endif;
+                ?>
+            </div><!-- /.cars -->
         </div>
     </div>
 </div>
-<!-- Featured properties end -->
+<!-- Featured Properties End -->
 
 <!-- services start -->
 <div class="services content-area-20 bg-white">
@@ -330,28 +203,6 @@
                     </div>
                 </div>
             </div>
-
-            <style>
-                .services-info-2 .inner-buttom.si1 i {
-                    display: none;
-                }
-
-               /* Icon styling */
-               .services-info-2 .inner-top i {
-                    display: block !important;       /* place icon on new line */
-                    margin-top: 5px;                /* spacing from heading */
-                    font-size: 40px;                 /* adjust icon size */
-                    color: #000;                     /* icon color */
-                    position: relative !important;   /* override theme absolute */
-                    align-items: center;             /* horizontal centering */
-                    text-align: center;              /* fallback for heading */
-               }
-
-               /* Back side: hide icon */
-               .services-info-2 .inner-buttom i {
-                   display: none !important;
-               }
-            </style>
 
             <div class="col-lg-4 col-md-12 col-sm-12 wow fadeInUp delay-04s">
                 <div class="services-info-2">
@@ -384,99 +235,74 @@
 </div>
 <!-- services end -->
 
-<!-- Recent Properties start -->
-<!-- <div class="recent-properties content-area-2">
+<!-- services start -->
+<div class="services content-area-20 bg-white">
     <div class="container">
         <div class="main-title">
-            <h1>Recent Properties</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod.</p>
+            <h1>What Are you Looking For?</h1>
+            <p>We're so glad you're here! At Right Path, we believe that finding your perfect home should be an exciting and stress-free experience. Whether you're buying, selling, or renting, our friendly and dedicated team is here to make your journey as smooth and enjoyable as possible.</p>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-6 col-sm-12 wow fadeInLeft delay-04s">
-                <div class="property-box-2 light-bg">
-                    <a href="#" class="thumbnail-photo">
-                        <div class="tag-for">For Sale</div>
-                        <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-12.png" alt="image" class="img-fluid">
-                    </a>
-                    <div class="content light-bg transition">
-                        <h4 class="title">
-                            <a href="properties-details.php">Sweet Family Home</a>
-                        </h4>
-                        <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
-                        <div class="transition clearfix">
-                            <ul class="facilities-list clearfix">
-                                <li>
-                                    <i class="flaticon-bed"></i> 3 Beds
-                                </li>
-                                <li>
-                                    <i class="flaticon-bath"></i> 2 Bath
-                                </li>
-                                <li>
-                                    <i class="flaticon-square-layouting-with-black-square-in-east-area"></i> Sq Ft:3400
-                                </li>
-                            </ul>
+            <?php
+            $args = [
+                'post_type' => 'service',
+                'posts_per_page' => -1,
+                'orderby' => 'menu_order',
+                'order' => 'ASC',
+            ];
+            $services = new WP_Query($args);
+
+            if ($services->have_posts()) :
+                while ($services->have_posts()) : $services->the_post();
+
+                    $title = get_field('post_title') ?: get_the_title();
+                    $description = get_field('description');
+                    $icon = get_field('icon'); // e.g., flaticon-user
+                    $image = get_field('image'); // returns array
+                    $link = get_field('link');
+                    
+                    // Image URL
+                    $image_url = $image ? $image['url'] : '';
+            ?>
+                <div class="col-lg-4 col-md-12 col-sm-12 wow fadeInUp delay-04s">
+                    <div class="services-info-2">
+                        <div class="inner">
+                            <!-- Front -->
+                            <div class="inner-top text-center">
+                                <?php if ($link) : ?>
+                                    <a href="<?php echo esc_url($link['url']); ?>" target="<?php echo esc_attr($link['target'] ?: '_self'); ?>">
+                                        <h4><?php echo esc_html($title); ?></h4>
+                                        <?php if ($icon) : ?>
+                                            <i class="<?php echo esc_attr($icon); ?>"></i>
+                                        <?php endif; ?>
+                                    </a>
+                                <?php else: ?>
+                                    <h4><?php echo esc_html($title); ?></h4>
+                                    <?php if ($icon) : ?>
+                                        <i class="<?php echo esc_attr($icon); ?>"></i>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                            <!-- Back -->
+                            <div class="inner-buttom text-center" style="<?php echo $image_url ? 'background-image:url('.esc_url($image_url).'); background-size:cover; background-position:center; opacity:0.9;' : ''; ?>">
+                                <?php if ($description) : ?>
+                                    <p><?php echo esc_html($description); ?></p>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 wow fadeInUp delay-04s">
-                <div class="property-box-2 light-bg">
-                    <a href="#" class="thumbnail-photo">
-                        <div class="tag-for">For Rent</div>
-                        <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-13.png" alt="image" class="img-fluid">
-                    </a>
-                    <div class="content light-bg transition">
-                        <h4 class="title">
-                            <a href="properties-details.php">Masons Villas</a>
-                        </h4>
-                        <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
-                        <div class="transition clearfix">
-                            <ul class="facilities-list clearfix">
-                                <li>
-                                    <i class="flaticon-bed"></i> 3 Beds
-                                </li>
-                                <li>
-                                    <i class="flaticon-bath"></i> 2 Bath
-                                </li>
-                                <li>
-                                    <i class="flaticon-square-layouting-with-black-square-in-east-area"></i> Sq Ft:3400
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-12 wow fadeInRight delay-04s">
-                <div class="property-box-2 light-bg">
-                    <a href="#" class="thumbnail-photo">
-                        <div class="tag-for">For Sale</div>
-                        <img src="<?php bloginfo('template_directory') ?>/assets/img/property/img-14.png" alt="image" class="img-fluid">
-                    </a>
-                    <div class="content light-bg transition">
-                        <h4 class="title">
-                            <a href="properties-details.php">Beautiful Single Home</a>
-                        </h4>
-                        <p>Lorem ipsum dolor sit amet and there are more things on this planet...</p>
-                        <div class="transition clearfix">
-                            <ul class="facilities-list clearfix">
-                                <li>
-                                    <i class="flaticon-bed"></i> 3 Beds
-                                </li>
-                                <li>
-                                    <i class="flaticon-bath"></i> 2 Bath
-                                </li>
-                                <li>
-                                    <i class="flaticon-square-layouting-with-black-square-in-east-area"></i> Sq Ft:3400
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+                endwhile;
+                wp_reset_postdata();
+            else :
+                echo '<p class="text-center w-100 py-5 fw-bold text-muted">No services found.</p>';
+            endif;
+            ?>
         </div>
     </div>
-</div> -->
-<!-- Recent Properties end -->
+</div>
+<!-- services end -->
 
 
 <!-- Testimonial 2 start -->
