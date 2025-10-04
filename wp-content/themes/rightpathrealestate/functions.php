@@ -423,10 +423,3 @@ function custom_comment_layout($comment, $args, $depth) {
     </li>
 <?php }
 
-
-
-
-
-
-
-

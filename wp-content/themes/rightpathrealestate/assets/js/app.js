@@ -812,13 +812,12 @@ jQuery(document).ready(function($) {
     }).trigger("resize");
 })(jQuery);
 
-
-$(function(){
+jQuery(function($){
     const $dropdown = $(".fancy-dropdown");
     const $selected = $dropdown.find(".dropdown-selected");
     const $options = $dropdown.find(".dropdown-options li");
-    const $input = $dropdown.find("#agentFilter");
-    const $agents = $(".agent-card");
+    const $input   = $("#agentFilter"); // now works because input is outside dropdown
+    const $agents  = $(".agent-card");
 
     // Toggle dropdown
     $selected.on("click", function(){
@@ -828,7 +827,7 @@ $(function(){
     // Select option
     $options.on("click", function(){
         const value = $(this).data("value");
-        const text = $(this).text();
+        const text  = $(this).text();
 
         $options.removeClass("selected");
         $(this).addClass("selected");
@@ -840,7 +839,7 @@ $(function(){
         // Smoothly show/hide agent cards
         $agents.each(function(){
             const $agent = $(this);
-            const agentCity = $agent.data("city").toLowerCase();
+            const agentCity = ($agent.data("city") || "").toLowerCase();
             if(value === "all" || agentCity === value){
                 $agent.stop(true, true).fadeIn(300);
             } else {
@@ -862,6 +861,7 @@ $(function(){
         $this.text($this.text() === "Call Me" ? $this.data("phone") : "Call Me");
     });
 });
+
 
 
 $(document).ready(function() {
