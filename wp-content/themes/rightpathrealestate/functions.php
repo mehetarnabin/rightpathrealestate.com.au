@@ -177,21 +177,46 @@ function create_property_type_taxonomy() {
 add_action('init', 'create_property_type_taxonomy');
 
 
-// AJAX Load More Properties
+// Unified AJAX Load More Properties
 function rightpath_load_more_properties() {
-    $paged = isset($_POST['page']) ? intval($_POST['page']) : 1;
-    $filter = sanitize_text_field($_POST['filter'] ?? 'all');
+    $paged   = isset($_POST['page']) ? intval($_POST['page']) : 1;
+    $status  = sanitize_text_field($_POST['status'] ?? '');      // For status pages
+    $filter  = sanitize_text_field($_POST['filter'] ?? 'all');   // Taxonomy filter
+    $featured = isset($_POST['featured']) ? intval($_POST['featured']) : 0; // Featured only
 
     $args = [
-        'post_type' => 'property',
+        'post_type'      => 'property',
         'posts_per_page' => 6,
-        'paged' => $paged + 1,
-        'meta_query' => [['key'=>'featured_property','value'=>1]]
+        'paged'          => $paged,
+        'meta_query'     => [],
     ];
 
+    // Filter by status if set
+    if ($status) {
+        $args['meta_query'][] = [
+            'key'     => 'status',
+            'value'   => $status,
+            'compare' => '='
+        ];
+    }
+
+    // Filter featured if set
+    if ($featured) {
+        $args['meta_query'][] = [
+            'key'     => 'featured_property',
+            'value'   => 1,
+            'compare' => '='
+        ];
+    }
+
+    // Filter by taxonomy if set
     if ($filter !== 'all') {
         $args['tax_query'] = [
-            ['taxonomy'=>'property_type','field'=>'slug','terms'=>$filter]
+            [
+                'taxonomy' => 'property_type',
+                'field'    => 'slug',
+                'terms'    => $filter,
+            ]
         ];
     }
 
@@ -209,6 +234,7 @@ function rightpath_load_more_properties() {
 }
 add_action('wp_ajax_load_more_properties', 'rightpath_load_more_properties');
 add_action('wp_ajax_nopriv_load_more_properties', 'rightpath_load_more_properties');
+
 
 // Register Services CPT
 function rightpath_register_services_cpt() {
@@ -246,46 +272,159 @@ function rightpath_register_services_cpt() {
 }
 add_action('init', 'rightpath_register_services_cpt');
 
-// Force 404 for invalid URLs, including non-existent pages or posts
-function rightpath_force_404_for_nonexistent_pages() {
-    if ( is_admin() ) return;
+function rightpath_register_testimonial_cpt() {
+    $labels = [
+        'name' => 'Testimonials',
+        'singular_name' => 'Testimonial',
+        'menu_name' => 'Testimonials',
+        'add_new' => 'Add Testimonial',
+        'add_new_item' => 'Add New Testimonial',
+        'edit_item' => 'Edit Testimonial',
+        'all_items' => 'All Testimonials',
+        'view_item' => 'View Testimonial',
+        'search_items' => 'Search Testimonials',
+        'not_found' => 'No testimonials found',
+        'not_found_in_trash' => 'No testimonials found in trash',
+    ];
 
-    global $wp_query;
+    $args = [
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => false,
+        'show_in_menu' => true,
+        'supports' => ['title', 'editor', 'thumbnail'],
+        'menu_icon' => 'dashicons-format-quote',
+    ];
 
-    $requested_url = trim( $_SERVER['REQUEST_URI'], '/' ); // e.g., "about-us"
-    
-    // Get all page slugs
-    $pages = get_posts([
-        'post_type' => 'page',
-        'posts_per_page' => -1,
-        'post_status' => 'publish',
-        'fields' => 'post_name',
-    ]);
-
-    // Get all CPT slugs if you want them included
-    $cpts = get_posts([
-        'post_type' => ['property','agent','service'],
-        'posts_per_page' => -1,
-        'post_status' => 'publish',
-        'fields' => 'post_name',
-    ]);
-
-    $all_slugs = array_merge( $pages, $cpts );
-
-    // If requested URL does not match any slug, force 404
-    $matches = array_filter( $all_slugs, function($slug) use ($requested_url) {
-        return $slug === $requested_url;
-    });
-
-    if ( empty($matches) && !is_home() && !is_front_page() ) {
-        $wp_query->set_404();
-        status_header(404);
-        nocache_headers();
-        include( get_query_template('404') );
-        exit;
-    }
+    register_post_type('testimonial', $args);
 }
-add_action( 'template_redirect', 'rightpath_force_404_for_nonexistent_pages', 1 );
+add_action('init', 'rightpath_register_testimonial_cpt');
+
+
+
+
+function rightpath_enable_post_tags() {
+    // Attach the built-in 'post_tag' taxonomy to 'post' post type
+    register_taxonomy_for_object_type('post_tag', 'post');
+    
+    // Make sure the 'post' post type supports 'tags'
+    add_post_type_support('post', 'tags');
+}
+add_action('init', 'rightpath_enable_post_tags');
+
+
+
+// Enqueue AJAX
+function rightpath_ajax_comments_enqueue() {
+    wp_enqueue_script(
+        'ajax-comments',
+        get_template_directory_uri() . '/assets/js/ajax-comments.js',
+        ['jquery'],
+        null,
+        true
+    );
+
+    wp_localize_script('ajax-comments', 'ajax_comments', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('ajax-comment-nonce')
+    ]);
+}
+add_action('wp_enqueue_scripts', 'rightpath_ajax_comments_enqueue');
+
+// Handle AJAX comment
+add_action('wp_ajax_nopriv_rightpath_ajax_comment', 'rightpath_ajax_comment_submit');
+add_action('wp_ajax_rightpath_ajax_comment', 'rightpath_ajax_comment_submit');
+
+function rightpath_ajax_comment_submit() {
+    if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'ajax-comment-nonce') ) {
+        wp_send_json_error('Invalid security token.');
+    }
+
+    $comment_post_ID = intval($_POST['comment_post_ID']);
+    $author = sanitize_text_field($_POST['author']);
+    $email  = sanitize_email($_POST['email']);
+    $comment_content = sanitize_textarea_field($_POST['comment']);
+    $comment_parent  = isset($_POST['comment_parent']) ? intval($_POST['comment_parent']) : 0;
+
+    if(!$comment_post_ID || empty($author) || empty($email) || empty($comment_content)){
+        wp_send_json_error('Please fill all fields.');
+    }
+
+    $comment_data = [
+        'comment_post_ID'      => $comment_post_ID,
+        'comment_author'       => $author,
+        'comment_author_email' => $email,
+        'comment_content'      => $comment_content,
+        'comment_approved'     => 1,
+        'comment_parent'       => $comment_parent
+    ];
+
+    $comment_id = wp_insert_comment($comment_data);
+
+    if($comment_id){
+        $comments = get_comments([
+            'post_id' => $comment_post_ID,
+            'status'  => 'approve',
+        ]);
+
+        ob_start();
+        wp_list_comments([
+            'style'       => 'ul',
+            'short_ping'  => true,
+            'avatar_size' => 50,
+            'callback'    => 'custom_comment_layout'
+        ], $comments);
+        $comments_html = ob_get_clean();
+
+        wp_send_json_success([
+            'comments_html' => $comments_html,
+            'message'       => '✅ Comment submitted successfully!',
+            'parent'        => $comment_parent
+        ]);
+    } else {
+        wp_send_json_error('Failed to submit comment.');
+    }
+
+    wp_die();
+}
+
+// Custom callback for comments
+function custom_comment_layout($comment, $args, $depth) {
+    $GLOBALS['comment'] = $comment; ?>
+    
+    <li <?php comment_class('comment-item'); ?> id="comment-<?php comment_ID(); ?>">
+        <div class="comment d-flex">
+            <div class="comment-author">
+                <?php echo get_avatar($comment, 60, '', '', ['class' => 'rounded-circle']); ?>
+            </div>
+            <div class="comment-content">
+                <div class="comment-meta d-flex justify-content-between align-items-center">
+                    <div class="comment-meta-author">
+                        <?php echo get_comment_author_link(); ?>
+                    </div>
+                    <div class="comment-meta-date">
+                        <span><?php echo get_comment_date('F j, Y'); ?> at <?php echo get_comment_time(); ?></span>
+                    </div>
+                </div>
+                <div class="comment-body">
+                    <?php comment_text(); ?>
+                </div>
+                <!-- <div class="comment-meta-reply">
+                    <?php
+                    comment_reply_link(array_merge($args, [
+                        'reply_text' => 'Reply',
+                        'depth' => $depth,
+                        'max_depth' => $args['max_depth']
+                    ]));
+                    ?>
+                </div> -->
+            </div>
+        </div>
+    </li>
+<?php }
+
+
+
 
 
 
